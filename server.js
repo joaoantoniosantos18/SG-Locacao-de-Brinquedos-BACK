@@ -5,6 +5,9 @@ const cors = require('cors')
 const conectarBancoDeDados = require('./config/database')
 
 const authRoutes = require('./routes/authRoutes')
+const brinquedoRoutes = require('./routes/brinquedoRoutes')
+const agendamentoRoutes = require('./routes/agendamentoRoutes')
+const funcionarioRoutes = require('./routes/funcionarioRoutes')
 
 const app = express()
 
@@ -16,11 +19,12 @@ app.use(cors({
 }))
 
 app.use(express.json())
-
-// Serve as imagens uploadadas como arquivos estáticos
 app.use('/uploads', express.static('uploads'))
 
 app.use('/api/auth', authRoutes)
+app.use('/api/brinquedos', brinquedoRoutes)
+app.use('/api/agendamentos', agendamentoRoutes)
+app.use('/api/funcionarios', funcionarioRoutes)
 
 app.get('/', (req, res) => {
   res.json({ mensagem: '✅ API do Sistema de Locação funcionando!' })
