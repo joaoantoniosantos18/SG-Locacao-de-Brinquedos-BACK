@@ -77,9 +77,9 @@ const criarAgendamento = async (req, res) => {
   try {
     const { dataEvento, horaInicio, localEvento, itens } = req.body
 
-    // Converte a data para objeto Date zerado (sem hora) para comparar só a data
-    const data = new Date(dataEvento)
-    data.setHours(0, 0, 0, 0)
+    // Força a data como UTC puro, sem conversão de fuso horário
+    const [ano, mes, dia] = dataEvento.split('-').map(Number)
+    const data = new Date(Date.UTC(ano, mes - 1, dia))
 
     // Não permite agendamentos no passado
     const hoje = new Date()

@@ -56,4 +56,31 @@ const alternarAtivo = async (req, res) => {
   }
 }
 
-module.exports = { listar, criar, alternarAtivo }
+const atualizar = async (req, res) => {
+  try {
+    const { nome, email, telefone, senha } = req.body
+    const dados = { nome, email, telefone }
+
+    // Só atualiza senha se foi enviada
+    if (senha) {
+      const bcrypt = require('bcryptjs')
+      dados.senha = await bcrypt.hash(senha, 10)
+    }
+
+    const funcionario = await Usuario.findByIdAndUpdate(
+      req.params.id,
+      dados,
+      { new: true }
+    ).select('-senha')
+
+    if (!funcionario || funcionario.role !== 'funcionario') {
+      return res.status(404).json({ mensagem: 'Funcionário não encontrado' })
+    }
+
+    res.json(funcionario)
+  } catch (erro) {
+    res.status(500).json({ mensagem: 'Erro ao atualizar funcionário', erro: erro.message })
+  }
+}
+
+module.exports = { listar, criar, alternarAtivo, atualizar }
