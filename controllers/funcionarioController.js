@@ -83,4 +83,22 @@ const atualizar = async (req, res) => {
   }
 }
 
-module.exports = { listar, criar, alternarAtivo, atualizar }
+const Agendamento = require('../models/Agendamento')
+
+const relatorio = async (req, res) => {
+  try {
+    const agendamentos = await Agendamento.find({
+      'equipe.funcionario': req.params.id,
+      status: 'confirmado'
+    })
+      .populate('cliente', 'nome')
+      .populate('itens.brinquedo', 'nome preco')
+      .sort({ dataEvento: -1 })
+
+    res.json(agendamentos)
+  } catch (erro) {
+    res.status(500).json({ mensagem: 'Erro ao buscar relatório', erro: erro.message })
+  }
+}
+
+module.exports = { listar, criar, alternarAtivo, atualizar, relatorio }
